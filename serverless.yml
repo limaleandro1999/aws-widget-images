@@ -1,0 +1,51 @@
+service: dashboard-poc
+
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  region: ${opt:region, 'eu-west-1'}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - xray:PutTraceSegment
+            - xray:PutTraceSegments
+            - xray:PutTelemetryRecords
+            - autoscaling:Describe*
+            - cloudwatch:Describe*
+            - cloudwatch:Get*
+            - cloudwatch:List*
+            - logs:Get*
+            - logs:List*
+            - logs:StartQuery
+            - logs:StopQuery
+            - logs:Describe*
+            - logs:TestMetricFilter
+            - logs:FilterLogEvents
+            - sns:Get*
+            - sns:List*
+          Resource:
+            - "*"
+
+functions:
+  hello:
+    handler: handler.getWidget
+    events:
+      - http:
+          path: /widget
+          method: GET
+          cors: true
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+  httpPort: 4000
+  printOutput: true
+  resourceRoutes: false
