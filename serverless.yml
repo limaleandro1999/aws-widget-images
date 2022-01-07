@@ -38,7 +38,7 @@ functions:
     events:
       - http:
           path: /widget
-          method: GET
+          method: POST
           cors: true
 
 plugins:
